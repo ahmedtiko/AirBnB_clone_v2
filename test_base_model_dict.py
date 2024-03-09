@@ -27,4 +27,3 @@ print(type(my_new_model.created_at))
 
 print("--")
 print(my_model is my_new_model)
->>>>>>> 87bf94b12d55c91041ceb97c65a2d0e8f07f554d
