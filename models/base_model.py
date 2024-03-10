@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 '''module base_model'''
-
-
 import uuid
 from datetime import datetime
 import models
@@ -25,13 +23,6 @@ class BaseModel():
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             models.storage.new(self)
-
-    @classmethod
-    def all(cls):
-        """
-        Return all instances of the class.
-        """
-        return [obj for obj in models.storage.all().values() if isinstance(obj, cls)]
 
     def __str__(self):
         '''string of BaseModel instance'''
