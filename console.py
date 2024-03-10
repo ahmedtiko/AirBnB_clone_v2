@@ -128,6 +128,26 @@ class HBNBCommand(cmd.Cmd):
             setattr(obj, args[2], args[3].lstrip('"').rstrip('"'))
             models.storage.save()
 
+    def do_all(self, args):
+        '''Print a string representation of all instances or all instances of a specific class
+       Usage: all <class name>
+    '''
+    args = args.split()
+    objects = models.storage.all()
+    new_list = []
+
+    if len(args) == 0:
+        for obj in objects.values():
+            new_list.append(obj.__str__())
+        print(new_list)
+    elif args[0] not in HBNBCommand.__classes:
+        print("** class doesn't exist **")
+    else:
+        class_instances = eval(args[0]).all()
+        for obj in class_instances:
+            new_list.append(obj.__str__())
+        print(new_list)
+
     def check_class_name(self, name=""):
         """Check if stdin user typed class name and id."""
         if len(name) == 0:
@@ -170,6 +190,6 @@ class HBNBCommand(cmd.Cmd):
         '''
         pass
 
+
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
-
