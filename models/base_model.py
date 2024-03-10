@@ -26,6 +26,13 @@ class BaseModel():
             self.updated_at = datetime.now()
             models.storage.new(self)
 
+    @classmethod
+    def all(cls):
+        """
+        Return all instances of the class.
+        """
+        return [obj for obj in models.storage.all().values() if isinstance(obj, cls)]
+
     def __str__(self):
         '''string of BaseModel instance'''
         return "[{}] ({}) {}".format(self.__class__.__name__,
