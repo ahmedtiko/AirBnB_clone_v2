@@ -30,15 +30,34 @@ class HBNBCommand(cmd.Cmd):
         '''Create a new instance of BaseModel, save it and prints the id
            Usage: create <class name>
         '''
-        args = args.split()
+        args = shlex.split(args)
         if len(args) == 0:
             print("** class name missing **")
-        elif args[0] not in HBNBCommand.__classes:
+            return
+
+        class_name = args[0]
+        
+        if class_name not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-        else:
-            new_creation = eval(args[0] + '()')
-            models.storage.save()
-            print(new_creation.id)
+            return
+
+        params = {}
+        for arg in args[1:]:
+            if "=" not in arg:
+                continue
+            key, value = arg.split("=")
+            if len(value) >= 2 and value[0] == '"' and value[-1] == "'":
+                value = value[1:-1].replace('_', ' ')
+            elif "." in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
+            params[key] = value
+            
+        new_instance = eval(class_name)(**params)
+        new_instance.save()
+        print(new_instance.id)
 
     def do_show(self, args):
         '''Prints the string representation of a specific instance
