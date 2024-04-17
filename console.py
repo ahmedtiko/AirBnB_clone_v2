@@ -26,20 +26,45 @@ class HBNBCommand(cmd.Cmd):
         "User"
     ]
 
-def do_create(self, arg):
-        """Creates a new instance of a class"""
-        args = arg.split()
+    def do_create(self, args):
+        '''Create a new instance of BaseModel, save it and prints the id
+           Usage: create <class name> <param 1> <param 2> <param 3>...
+           Param syntax: <key name>=<value>
+        '''
+        args = shlex.split(args)
         if len(args) == 0:
             print("** class name missing **")
-            return False
-        if args[0] in classes:
-            new_dict = self._key_value_parser(args[1:])
-            instance = classes[args[0]](**new_dict)
-        else:
+            return
+
+        class_name = args[0]
+
+        if class_name not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-            return False
-        print(instance.id)
-        instance.save()
+            return
+
+        params = {}
+        for arg in args[1:]:
+            if "=" not in arg:
+                continue
+            key, value = arg.split("=")
+            if len(value) >= 2 and value[0] == '"' and value[-1] == '"':
+                value = value[1:-1].replace('_', ' ')
+            elif "." in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            params[key] = value
+
+        new_instance = eval(class_name)(**params)
+        new_instance.save()
+        print(new_instance.id)
+
 
     def do_show(self, args):
         '''Prints the string representation of a specific instance
